@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,16 +21,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 @RestController
 public class AppointmentController {
 	
 	@Autowired
 	AppointmentService appointmentservice ;
 	
-	@PostMapping("/placeappointment")
-	public void placeappointment(@Valid @RequestBody Appointment app) {
-		appointmentservice.saveappointment(app);
+	@Autowired
+	UserService userservice;
+	
+	@PostMapping("/placeappointment/{id}/")
+	public ResponseEntity<Appointment> saveAppointment( @PathVariable Integer id ,@Valid @RequestBody Appointment app) {
+		app.setAmount(app.getNoofweeks()*app.getPacakageselected());
+		appointmentservice.saveappointment(app,id);
+		return new ResponseEntity<Appointment>(app,HttpStatus.OK);
 	}
+	
+	@ExceptionHandler(value =  { UserNotFoundException.class, IllegalStateException.class ,EmptyResultDataAccessException.class})
+	public ResponseEntity<User> exception(Exception userNotFoundException) {
+	    return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+	}
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	  @ResponseStatus(HttpStatus.BAD_REQUEST)
 	  ResponseEntity<String> handleConstraintViolationException(MethodArgumentNotValidException e) {

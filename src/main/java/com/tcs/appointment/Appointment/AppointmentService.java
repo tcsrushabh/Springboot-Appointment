@@ -1,6 +1,8 @@
 package com.tcs.appointment.Appointment;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,19 @@ public class AppointmentService {
 	@Autowired
 	AppointmentRepository appointmentrepository ;
 	
-	public void saveappointment(Appointment app) {
+	@Autowired
+	UserRepository userrepository;
+	
+	public void saveappointment(Appointment app,Integer id) {
+		Optional<User> user = userrepository.findById(id);
+		if (!user.isPresent()) {
+			throw new UserNotFoundException("user does not exist");
+		}
+		Set<Appointment> appointmentForUser = new HashSet<>();
+		appointmentForUser.add(app);
+		user.get().setAppointments(appointmentForUser);
 		appointmentrepository.save(app);
-		System.out.println("Called");
+		System.out.println("Saved");
 	}
 	
 	public Optional<Appointment> getAppointmentDetailsById(Integer id) {
