@@ -1,4 +1,4 @@
-package com.tcs.appointment.Appointment;
+package com.tcs.appointment.Appointment.exception;
 
 public class UserNotFoundException extends RuntimeException {
 	public UserNotFoundException(String message) {

@@ -1,4 +1,4 @@
-package com.tcs.appointment.Appointment;
+package com.tcs.appointment.Appointment.service;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -8,6 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.tcs.appointment.Appointment.Appointment;
+import com.tcs.appointment.Appointment.User;
+import com.tcs.appointment.Appointment.exception.UserNotFoundException;
+import com.tcs.appointment.Appointment.repository.AppointmentRepository;
+import com.tcs.appointment.Appointment.repository.UserRepository;
+
 
 @Service
 public class AppointmentService {
@@ -16,18 +22,18 @@ public class AppointmentService {
 	AppointmentRepository appointmentrepository ;
 	
 	@Autowired
-	UserRepository userrepository;
+	UserRepository userRepo;
 	
-	public void saveappointment(Appointment app,Integer id) {
-		Optional<User> user = userrepository.findById(id);
-		if (!user.isPresent()) {
-			throw new UserNotFoundException("user does not exist");
+	public void save(Appointment app,Integer id) {
+		Optional<User> user = userRepo.findById(id);
+		if(!user.isPresent()) {
+			throw new UserNotFoundException("appointment does not exist");
 		}
 		Set<Appointment> appointmentForUser = new HashSet<>();
 		appointmentForUser.add(app);
 		user.get().setAppointments(appointmentForUser);
 		appointmentrepository.save(app);
-		System.out.println("Saved");
+		System.out.println("saved");
 	}
 	
 	public Optional<Appointment> getAppointmentDetailsById(Integer id) {

@@ -1,13 +1,10 @@
 package com.tcs.appointment.Appointment;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import javax.persistence.ManyToOne;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -54,13 +51,10 @@ public class Appointment {
 	@Value("${some.key:false}")
 	private boolean physiorequired;
 	
-	private Integer amount = pacakageselected*noofweeks;
+	private int amount= pacakageselected*noofweeks;
 	
 	@ManyToOne
-	private User user;
+    private User user;
 	
-	
-	
-
 }
 
